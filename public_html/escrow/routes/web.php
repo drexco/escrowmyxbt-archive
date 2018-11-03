@@ -11,6 +11,21 @@ Route::get('/login',array('uses'=>'HomeController@loginView'));
 //processing login
 Route::post('/login',array('uses'=>'HomeController@logIn'));
 
+//signup View
+Route::get('/signup',array('uses'=>'HomeController@signUpView'));
+
+//signup View
+Route::get('/success',array('uses'=>'HomeController@successView'));
+
+//processing login
+Route::post('/signup',array('uses'=>'HomeController@signUp'));
+
+//processing status check
+Route::get('/statuses',array('uses'=>'HomeController@statuses'));
+
+//Status
+Route::get('/statuses-{id}',array('uses'=>'HomeController@viewStatus'))->where(array('id'=>'[0-9]+'));
+
 //processing log-out
 Route::get('/log-out',array('uses'=>'HomeController@logOut'));
 

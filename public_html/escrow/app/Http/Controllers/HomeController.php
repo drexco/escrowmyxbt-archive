@@ -31,6 +31,62 @@
 	{
 		return View::make('home.index');
 	}
+	
+	//SignUp
+    public static function signUp()
+	{
+                $inputs = Input::all();
+				$validator = HomeModel::signUpValidate($inputs);
+
+				if($validator->passes())
+				{
+				    $email_data = HomeModel::signUp($inputs);
+				    Mail::send('emails.welcome', $email_data, function($message) use ($email_data) {
+				        $message->from('notifications@escrowmyxbt.com', 'escrowMyXBT');
+				 	    $message->to($email_data['email'], $email_data['last_name'].' '.$email_data['first_name'])->subject('Welcome to EscrowMyXBT');
+				    });
+					Session::flash('signup_message','Signed Up Successfully');
+					return Redirect::to('/success'); 
+				}
+				else
+				{
+	             	Session::flash('signup_message','Something went wrong, please correct your inputs.');
+					return Redirect::to('/signup')->withErrors($validator)->withInput(); 
+				}
+				return Redirect::to('/success');
+	}
+
+	//Add User - View
+    public static function signUpView()
+	{
+		return View::make('home.signup');
+	}
+	
+	//Add User - View
+    public static function successView()
+	{
+		return View::make('home.success');
+	}
+
+	//Home Page View
+	public function statusView()
+	{
+		return View::make('home.status');
+	}
+
+	//Home Page View
+	public function statuses()
+	{
+	    $data = HomeModel::statuses();
+		return View::make('home.statuses')->with('data',$data);
+	}
+	
+	//View Transaction
+	public static function viewStatus($id)
+	{
+		$data = HomeModel::viewStatus($id);
+		return View::make('home.viewStatus')->with('data',$data);
+	}
 
 	//login form view
 	public function loginView()

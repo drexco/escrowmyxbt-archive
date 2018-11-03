@@ -2,7 +2,7 @@
 <html lang="en" class=" ">
 <head>  
   <meta charset="utf-8" />
-  <title>EscrowMyXBT : Secure Login</title>
+  <title>EscrowMyXBT : Sign Up</title>
   <meta name="description" content="app, escrow, finance, btc bitcoin, xbt" />  
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
   <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css" />
@@ -18,39 +18,43 @@
   <![endif]-->
 </head>
 <body class="" >
-  <section id="content" class="m-t-lg wrapper-md animated fadeInUp">    
+  <section id="content" class="m-t-lg wrapper-md animated fadeInDown">
     <div class="container aside-xl">
       <a class="navbar-brand block" href="index.html">escrowMyXBT</a>
       <section class="m-b-lg">
         <header class="wrapper text-center">
-          <strong>Sign in</strong>
+          <strong>Sign up</strong>
         </header>
-        <form action="/escrow/login" method="post" role="form">
-                                <div class="list-group">
+        <form action="signup" role="form" method="post">
+          <div class="list-group">
+            <div class="list-group-item">
+                                            <input class="form-control" id="first_name" name="first_name" />
+                                            <label for="first_name">First Name</label>
+                                    </div>
                                     <div class="list-group-item">
+                                          <input class="form-control" id="last_name" name="last_name" />
+                                            <label for="last_name">Last Name</label>
+                                    </div>
+            <div class="list-group-item">
                                             <input class="form-control" id="email" name="email" />
-                                            <label for="login-username">Email</label>
+                                            <label for="email">Email</label>
                                     </div>
                                     <div class="list-group-item">
                                           <input class="form-control" id="password" name="password" type="password" />
-                                            <label for="login-password">Password</label>
+                                            <label for="password">Password</label>
                                     </div>
-                                </div>
-                                <button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
-                                <div class="text-center m-t m-b"><a href="#"><small>Forgot password?</small></a></div>
-                                <div class="line line-dashed"></div>
-                                <p class="text-muted text-center"><small>Do not have an account?</small></p>
-                                <a href="signup" class="btn btn-lg btn-default btn-block">Create an account</a>
-                                <div class="form-group">
-                                  <div class="col-xs-12">
-                                    @if(Session::get('login_message'))
-                                      {{Session::get('login_message')}}
-                                    @endif
-                                  </div>
-                                </div>
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            </form>
-                            <!-- END Login Form -->
+          </div>
+          <div class="checkbox m-b">
+            <label>
+              <input type="checkbox"> Agree the <a href="#">terms and policy</a>
+            </label>
+          </div>
+          <button type="submit" class="btn btn-lg btn-primary btn-block">Sign up</button>
+          <div class="line line-dashed"></div>
+          <p class="text-muted text-center"><small>Already have an account?</small></p>
+          <a href="login" class="btn btn-lg btn-default btn-block">Sign in</a>
+          <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        </form>
       </section>
     </div>
   </section>

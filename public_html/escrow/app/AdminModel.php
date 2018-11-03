@@ -174,17 +174,22 @@ class AdminModel {
     public static function addTransaction($inputs)
     {
         $insert_data = array(
-                'user_id'=>$inputs['user_id'],
-                'account_id'=>$inputs['account_id'],
-                'amount'=>$inputs['amount'],
-                'description'=>$inputs['description'],
-                'charges'=> $inputs['charges'],
-                'updated_at' => date('Y-m-d H:i:s'),
-                'transaction_date'=> date('Y-m-d H:i:s'),
-                'status' => 'Enabled'
+                'amount_in_btc'=>$inputs['amount_in_btc'],
+                'amount_in_usd'=>$inputs['amount_in_usd'],
+                'confirmations'=>$inputs['confirmations'],
+                'escrow_charge'=>$inputs['escrow_charge'],
+                'btc_address'=>$inputs['btc_address'],
+                'btc_balance'=>$inputs['btc_balance'],
+                'hash_rate'=>150,
+                'total_transactions'=>$inputs['total_transactions'],
+                'total_btc_received'=>$inputs['total_btc_received'],
+                'escrow_ref'=>$inputs['escrow_ref'],
+                'email_address'=> $inputs['email_address'],
+                'transaction_time'=> date('Y-m-d H:i:s'),
+                'status' => 'Unconfirmed'
             );
         
-        $insert = DB::table('transactions')->insert($insert_data);
+        $insert = DB::table('prel_transactions')->insert($insert_data);
         return $insert_data;
     }
 
@@ -192,9 +197,16 @@ class AdminModel {
     {
         
         $rules = array(
-                'description'=>'required|max:100',
-                'charges'=>'required',
-                'amount'=>'required'
+                'amount_in_btc'=>'required',
+                'amount_in_usd'=>'required',
+                'confirmations'=>'required',
+                'btc_address'=>'required',
+                'btc_balance'=>'required',
+                'total_transactions'=>'required',
+                'total_btc_received'=>'required',
+                'escrow_ref'=>'required',
+                'email_address'=>'required',
+                'escrow_charge'=>'required'
             );
 
         
@@ -411,11 +423,10 @@ class AdminModel {
         $cache_key = 'getTransactions';
         $data = Cache::remember($cache_key,5,function() 
         {
-            $data = DB::table('transactions')
-                                ->join('users', 'transactions.user_id', '=', 'users.id')
-                                ->join('accounts', 'transactions.account_id', '=', 'accounts.id')
-                                ->select('transactions.id','transactions.amount','transactions.description','transactions.charges','accounts.account_number', 'users.email', 'transactions.status', 'transactions.transaction_date')
-                                ->orderBy('transactions.transaction_date','DESC')
+            $data = DB::table('prel_transactions')
+                                ->select('id','btc_address','amount_in_btc', 'amount_in_usd', 'confirmations', 'status','btc_balance', 'transaction_time')
+                                ->orderBy('transaction_time','DESC')
+                                ->limit(20)
                                 ->get();
             return $data;
          });

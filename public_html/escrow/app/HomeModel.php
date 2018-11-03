@@ -10,6 +10,12 @@ use Session;
 
 use Input;
 
+use stdClass;
+
+use App;
+
+use Cache;
+
 class HomeModel {
 
 	public static function newPassword()
@@ -55,6 +61,82 @@ class HomeModel {
 			return $data;
 		}
 	}
+
+    public static function signUp($inputs)
+    {
+        $tempPassword = $inputs['password'];
+        $insert_data = array(
+                'first_name'=>$inputs['first_name'],
+                'last_name'=>$inputs['last_name'],
+                'email'=>$inputs['email'],
+                'password'=> md5($inputs['password']),
+                'temp_password'=> $tempPassword,
+                'account_type'=>'customer',
+                'last_login' => date('Y-m-d H:i:s'),
+                'created_at'=> date('Y-m-d H:i:s'),
+                'recovery_time'=> date('Y-m-d H:i:s'),
+                'recovery_token' => null,
+                'verification_status' => 1,
+                'status' => 'Enabled'
+            );
+        
+        $insert = DB::table('users')->insert($insert_data);
+        return $insert_data;
+    }
+    
+    //Get Transactions
+    public static function statuses()
+    {
+        $cache_key = 'getStatuses';
+        $data = Cache::remember($cache_key,5,function() 
+        {
+            $data = DB::table('prel_transactions')
+                                ->select('id','btc_address','amount_in_btc', 'amount_in_usd', 'confirmations', 'status','btc_balance', 'transaction_time')
+                                ->orderBy('transaction_time','DESC')
+                                ->limit(20)
+                                ->get();
+            return $data;
+         });
+
+            return  $data;
+    }
+    
+    public static function viewStatus($id)
+    {
+        $cache_key = 'viewStatus'.$id;
+        $data = Cache::remember($cache_key,5,function() use ($id) 
+        {
+             $tx = DB::table('transactions')
+                                ->where('id',$id)
+                                ->select('btc_address','amount_in_btc', 'amount_in_usd', 'confirmations', 'status','btc_balance', 'transaction_time', 'escrow_charge', 'email_address')
+                                ->orderBy('transaction_time','DESC')
+                                ->get();
+
+            return $tx;
+        });
+
+        if($data)
+            return $data;
+        else
+            return null;
+
+    }
+    
+    	public static function signUpValidate($inputs)
+    {
+        
+        $rules = array(
+                'first_name'=>'required|max:20',
+                'last_name'=>'required|max:20',
+                'email'=>'required|email',
+                'password'=>'required|max:16'
+            );
+
+        
+        $validator = Validator::make($inputs,$rules);
+        return $validator;
+
+    }
 
 	public static function loginValidate($inputs)
 	{

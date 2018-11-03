@@ -454,7 +454,7 @@ class adminController extends Controller {
 		$beneficiaries = Beneficiary::all();
 		if (Session::get('user_id')) {
 			if (Session::get('account_type') == 'admin' ) {
-               return View::make('admin.addAccount')->with('beneficiaries',$beneficiaries);
+               return View::make('admin.addAccount');
 			}
 			App::abort(403);
 		}
@@ -540,11 +540,9 @@ class adminController extends Controller {
 	//Add Transaction - View
     public static function addTransactionView()
 	{
-		$accounts = Account::all();
-		$users = User::all();
 		if (Session::get('user_id')) {
 			if (Session::get('account_type') == 'admin' ) {
-               return View::make('admin.addTransaction')->with('accounts',$accounts)->with('users',$users);
+               return View::make('admin.addTransaction');
 			}
 			App::abort(403);
 		}
